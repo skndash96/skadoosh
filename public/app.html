@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Skadoosh App - Everything </title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="out.css">
+<script src="https://kit.fontawesome.com/f3339b4404.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="z-20 px-2 py-1 sticky top-0 flex justify-start items-center shadow-2xl bg-gradient-to-r from-amber-600 to-amber-800 text-gray-50">
+<button id="navtoggle" class="w-6 mx-2"></button>
+<a href="/" class="">
+<img class="inline -mt-2 w-8 h-8" src="images/logo.svg">
+<h2 class="title inline">Skadoosh</h2>
+</a>
+</header>
+<nav id="nav" class="z-10 py-10 shadow-lg fixed left-0 top-0 bottom-0 transition-transform -translate-x-full bg-slate-800 text-gray-50">
+<div class="grid">
+<h3 class="px-2 py-1 bg-neutral-900"> Nav </h3>
+<button name="some1" class="pl-4 pr-12 py-2 text-left hover:bg-slate-700">
+Some1 page
+</button>
+<button name="some2" class="pl-4 pr-12 py-2 text-left hover:bg-slate-700">
+Some2 page
+</button>
+<button name="some3" class="pl-4 pr-12 py-2 text-left hover:bg-slate-700">
+Some3 page
+</button>
+<button name="some4" class="pl-4 pr-12 py-2 text-left hover:bg-slate-700">
+Some4 page
+</button>
+</div>
+<div class="grid mt-4">
+<h3 id="navProf" class="px-2 py-1 bg-neutral-900"> Profile </h3>
+<button name="profile" class="pl-4 pr-12 py-2 text-left hover:bg-slate-700">
+<i class="mr-2 fa-solid fa-user"></i>View Profile
+</button>
+<button id="signout" class="pl-4 pr-12 py-2 text-left text-rose-500 hover:bg-slate-700">
+<i class="mr-2 fa-solid fa-arrow-right-from-bracket"></i>Sign Out
+</button>
+</div>
+</nav>
+<div id="notif" class="hidden p-2 absolute z-50 top-8 w-3/4 max-w-md left-1/2 -translate-x-1/2 scale-0 transition-transform rounded-sm bg-slate-800 text-gray-50">
+<button id="notifx" class="px-2 py-1 rounded-full absolute -top-2 -right-2 bg-slate-800 text-rose-300">x</button>
+<span></span>
+</div>
+<section class="p-8 relative w-fit mx-auto flex flex-col justify-center items-center min-h-screen">
+<div id="spinner" class="ml-4 inline-block">
+<i class="mr-2 fa-solid fa-spinner animate-spin"></i>Loading...
+</div>
+<div id="main"></div>
+</section>
+<footer class="p-4 z-20 grid place-items-center bg-slate-900 text-gray-50">
+Copyright @ 2022
+<hr class="mt-2 w-full h-2 max-w-xs">
+Design and Development by <a class="hover:underline" href="https://skndash.tk">Dash Skndash</a>
+</footer>
+<script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="scripts/notif.js"></script>
+<script>
+window.addEventListener("load", () => {
+const firebaseConfig = {
+apiKey: "AIzaSyAbrxNYwxP1g41as5eWyyVXUn8kgXGWCVg",
+authDomain: "skadoosh-4ed25.firebaseapp.com",
+projectId: "skadoosh-4ed25",
+storageBucket: "skadoosh-4ed25.appspot.com",
+messagingSenderId: "24206697274",
+appId: "1:24206697274:web:749eef0943789268aa2603",
+measurementId: "G-32SBQ3DV8V"
+}
+const app = firebase.initializeApp(firebaseConfig)
+const analytics = firebase.analytics(app)
+const db = firebase.firestore(app)
+const auth = firebase.auth(app)
+const spinner = document.getElementById("spinner")
+const main = document.getElementById("main")
+auth.onAuthStateChanged(u => {
+if (!u) window.location.replace("/auth")
+else loadApp()
+})
+let user
+async function loadApp() {
+try {
+let uDoc = await db.collection("users").doc(auth.currentUser.uid).get()
+user = uDoc.exists ? uDoc.data() : { since: new Date() }
+if(!uDoc.exists) {
+await uDoc.ref.set(user)
+await auth.updateUserProfile({ displayName: "User"+Math.ceil(Math.random()*1000) })
+}
+user.displayName = auth.currentUser.displayName
+user.photoURL = auth.currentUser.photoURL || "images/hero.webp"
+const profEl = document.createElement("div")
+profEl.innerHTML = `<img class="mr-2 w-6 h-6 inline-block rounded-full" src="${user.photoURL}" alt="PFP"> ${user.displayName}`
+document.getElementById("navProf").replaceChildren(profEl)
+document.getElementById("nav").querySelectorAll("button[name]").forEach(b => b.addEventListener("click", e => loadPage(e.target.name)))
+document.getElementById("signout").addEventListener("click", () => auth.signOut().catch(e => console.error(e)))
+} catch(e) {
+console.error(e)
+} finally {
+loadPage("main", false)
+}
+}
+function loadPage(i) {
+spinner.classList.remove("hidden")
+main.replaceChildren("This is the "+i+" page.")
+spinner.classList.add("hidden")
+}
+})
+</script>
+</body>
+</html>

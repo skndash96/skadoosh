@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, ::before, ::after {
+    @apply m-0 p-0;
+  }
+  html {
+    @apply scroll-smooth;
+    font-size: calc(0.6rem + 1vw);
+  }
+  body {
+    @apply min-h-screen flex flex-col justify-between bg-gray-50 font-['Cafe'];
+  }
+  .title {
+    @apply font-['Coolvetica'];
+  }
+  h1 {
+    @apply text-4xl;
+  }
+  h1.huge {
+    @apply text-5xl;
+  }
+  h2 {
+    @apply text-2xl;
+  }
+  h3 {
+    @apply text-xl;
+  }
+  h4 {
+    @apply text-lg;
+  }
+  h5, p {
+    @apply text-base;
+  }
+  h6 {
+    @apply text-sm;
+  }
+}
+
+@font-face {
+  font-family: "Coolvetica";
+  src: url("fonts/Coolvetica.otf");
+}
+@font-face {
+  font-family: "Cafe";
+  src: url("fonts/Cafe.ttf");
+}

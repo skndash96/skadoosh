@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Skadoosh App - Everything </title>
+    <%- include("partials/head") %>
+  </head>
+  <body>
+    <%- include("partials/header") %>
+
+    <section class="p-8 relative flex flex-col justify-center items-center min-h-screen">
+      <form id="register" class="w-fit mx-auto max-w-xl">
+        <h2 class="title text-center">Get Started</h2>
+        <div class="mt-8 relative">
+          <input class="px-2 py-1 w-64 bg-slate-200 peer outline-none focus:outline-2 focus:outline-blue-600" name="username" type="text" required></input>
+          <label class="absolute left-2 top-1 transition-all peer-focus:-top-6 peer-valid:-top-6">Username</label>
+        </div>
+        <div class="mt-8 relative">
+          <input class="px-2 py-1 w-64 bg-slate-200 peer outline-none focus:outline-2 focus:outline-blue-600" name="email" type="email" required></input>
+          <label class="absolute left-2 top-1 transition-all peer-focus:-top-6 peer-valid:-top-6">Email</label>
+        </div>
+        <div class="mt-8 relative">
+          <input class="px-2 py-1 w-64 bg-slate-200 peer outline-none focus:outline-2 focus:outline-blue-600" name="password" type="password" required></input>
+          <label class="absolute left-2 top-1 transition-all peer-focus:-top-6 peer-valid:-top-6">Password</label>
+        </div>
+        <div class="mt-8 relative">
+          <input class="px-2 py-1 w-64 bg-slate-200 peer outline-none focus:outline-2 focus:outline-blue-600" name="cpassword" type="password" required></input>
+          <label class="absolute left-2 top-1 transition-all peer-focus:-top-6 peer-valid:-top-6">Confirm Password</label>
+        </div>
+        <div class="mt-8 flex flex-col gap-2 items-end">
+          <button class="px-2 py-1 w-fit bg-amber-300" type="submit">Register</button>
+          <button id="tologin" class="underline text-blue-600" type="button">Registered Already?</button>
+        </div>
+      </form>
+      <form id="login" class="hidden w-fit mx-auto max-w-xl">
+        <h2 class="title text-center">Login</h2>
+        <div class="mt-8 relative">
+          <input class="px-2 py-1 w-64 bg-slate-200 peer outline-none focus:outline-2 focus:outline-blue-600" name="email" type="email" required></input>
+          <label class="absolute left-2 top-1 transition-all peer-focus:-top-6 peer-valid:-top-6">Email</label>
+        </div>
+        <div class="mt-8 relative">
+          <input class="px-2 py-1 w-64 bg-slate-200 peer outline-none focus:outline-2 focus:outline-blue-600" name="password" type="password" required></input>
+          <label class="absolute left-2 top-1 transition-all peer-focus:-top-6 peer-valid:-top-6">Password</label>
+        </div>
+        <div class="mt-8 flex flex-col gap-2 items-end">
+          <button class="px-2 py-1 w-fit bg-amber-300" type="submit">Login</button>
+          <button id="toregister" class="underline text-blue-600" type="button">Registered yet?</button>
+          <button id="resetpw" class="mt-2 underline text-blue-600" type="button">Forgot Password?</button>
+        </div>
+      </form>
+      <span id="status" class="mt-2 text-center font-semibold"></span>
+    </section>
+
+    <%- include("partials/footer") %>
+
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <script>document.getElementById("navtoggle").remove()</script>
+    <script src="scripts/notif.js"></script>
+    <script>
+      window.addEventListener("load", () => {
+        const firebaseConfig = {
+          apiKey: "AIzaSyAbrxNYwxP1g41as5eWyyVXUn8kgXGWCVg",
+          authDomain: "skadoosh-4ed25.firebaseapp.com",
+          projectId: "skadoosh-4ed25",
+          storageBucket: "skadoosh-4ed25.appspot.com",
+          messagingSenderId: "24206697274",
+          appId: "1:24206697274:web:749eef0943789268aa2603",
+          measurementId: "G-32SBQ3DV8V"
+        }
+    
+        const app = firebase.initializeApp(firebaseConfig)
+        const analytics = firebase.analytics(app)
+        const db = firebase.firestore(app)
+        const auth = firebase.auth(app)
+
+        auth.onAuthStateChanged(async u => {
+          if (!u) return
+          setStat("Logged In, Redirecting.")
+          window.location.replace("/app")
+        })
+
+        const regf = document.getElementById("register"),
+          logf = document.getElementById("login"),
+          e500 = "Something went wrong, Try again Later."
+        
+        document.getElementById("resetpw").onclick = e => {
+          setStat("...")
+          
+          const d = new FormData(logf)
+          if (!d.get("email") || !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(d.get("email"))) {
+            setStat("Type in a valid email address and try again.", true)
+            logf.querySelector("input[name='email']").focus()
+            return
+          }
+          
+          e.target.disabled = true
+          let cdown = 15
+          let civ = setInterval(() => (e.target.textContent = (cdown--, `Send Again in ${cdown}s`)), 1000)
+          setTimeout(() => {
+            clearInterval(civ)
+            e.target.textContent = "Send Again"
+            e.target.disabled = false
+          }, 15*1000)
+          
+          auth.sendPasswordResetEmail(d.get("email"))
+          .then(() => setNotif("An email has been sent. Follow the email to reset password. Do check your Spam folder!"))
+          .catch(e => setStat(e.code === "auth/user-not-found" ? "User not Found." : e500, true) && console.error(e.code, e))
+        }
+        
+        document.getElementById("tologin").onclick = togglef
+        document.getElementById("toregister").onclick = togglef
+        function togglef({target}) {
+          setStat("")
+          if (target.id === "toregister") {logf.classList.add("hidden");regf.classList.remove("hidden")}
+          else {regf.classList.add("hidden");logf.classList.remove("hidden")}
+        }
+
+        regf.onsubmit = e => {
+          e.preventDefault()
+          setStat("...")
+          const d = new FormData(regf)
+          if (d.get("password") !== d.get("cpassword")) return setStat("Passwords don't match.", true)
+          
+          auth.createUserWithEmailAndPassword(d.get("email"), d.get("password"))
+          .catch(e => setStat(e.code?.slice(5) || e500, true))
+        }
+        
+        logf.onsubmit = e => {
+          e.preventDefault()
+          setStat("...")
+          const d = new FormData(logf)
+          
+          auth.signInWithEmailAndPassword(d.get("email"), d.get("password"))
+          .catch(e => setStat(e.code?.slice(5) || e500, true))
+        }
+
+        const status = document.getElementById("status")
+        const setStat = (i,e) => {
+          status.style.textColor = e ? "red" : "black"
+          status.textContent = i
+          return 1
+        }
+      })
+    </script>
+</body>
+</html>

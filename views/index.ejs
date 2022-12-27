@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Skadoosh - Everything you need as a student.</title>
+    <%- include("partials/head") %>
+  </head>
+  <body>
+    <%- include("partials/header") %>
+    
+    <section class="p-8 grid place-items-center min-h-screen bg-[url('images/hero.webp')] bg-no-repeat bg-cover bg-center">
+      <div class="p-2 bg-gray-900/25">
+        <h1 class="font-bold max-w-2xl huge text-gray-50">Solve all your tedious works right away. Now is the time to relax!</h1>
+        <a href="/app" class="mt-2 px-2 py-1 inline-block shadow-sm bg-gray-50 font-bold text-sky-900">Get Started</a>
+      </div>
+    </section>
+
+    <%- include("partials/footer") %>
+    <script>document.getElementById("navtoggle").remove()</script>
+    <script src="scripts/notif.js"></script>
+  </body>
+</html>

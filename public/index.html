@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Skadoosh - Everything you need as a student.</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="out.css">
+<script src="https://kit.fontawesome.com/f3339b4404.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="z-20 px-2 py-1 sticky top-0 flex justify-start items-center shadow-2xl bg-gradient-to-r from-amber-600 to-amber-800 text-gray-50">
+<button id="navtoggle" class="w-6 mx-2"></button>
+<a href="/" class="">
+<img class="inline -mt-2 w-8 h-8" src="images/logo.svg">
+<h2 class="title inline">Skadoosh</h2>
+</a>
+</header>
+<nav id="nav" class="z-10 py-10 shadow-lg fixed left-0 top-0 bottom-0 transition-transform -translate-x-full bg-slate-800 text-gray-50">
+<div class="grid">
+<h3 class="px-2 py-1 bg-neutral-900"> Nav </h3>
+<button name="some1" class="pl-4 pr-12 py-2 text-left hover:bg-slate-700">
+Some1 page
+</button>
+<button name="some2" class="pl-4 pr-12 py-2 text-left hover:bg-slate-700">
+Some2 page
+</button>
+<button name="some3" class="pl-4 pr-12 py-2 text-left hover:bg-slate-700">
+Some3 page
+</button>
+<button name="some4" class="pl-4 pr-12 py-2 text-left hover:bg-slate-700">
+Some4 page
+</button>
+</div>
+<div class="grid mt-4">
+<h3 id="navProf" class="px-2 py-1 bg-neutral-900"> Profile </h3>
+<button name="profile" class="pl-4 pr-12 py-2 text-left hover:bg-slate-700">
+<i class="mr-2 fa-solid fa-user"></i>View Profile
+</button>
+<button id="signout" class="pl-4 pr-12 py-2 text-left text-rose-500 hover:bg-slate-700">
+<i class="mr-2 fa-solid fa-arrow-right-from-bracket"></i>Sign Out
+</button>
+</div>
+</nav>
+<div id="notif" class="hidden p-2 absolute z-50 top-8 w-3/4 max-w-md left-1/2 -translate-x-1/2 scale-0 transition-transform rounded-sm bg-slate-800 text-gray-50">
+<button id="notifx" class="px-2 py-1 rounded-full absolute -top-2 -right-2 bg-slate-800 text-rose-300">x</button>
+<span></span>
+</div>
+<section class="p-8 grid place-items-center min-h-screen bg-[url('images/hero.webp')] bg-no-repeat bg-cover bg-center">
+<div class="p-2 bg-gray-900/25">
+<h1 class="font-bold max-w-2xl huge text-gray-50">Solve all your tedious works right away. Now is the time to relax!</h1>
+<a href="/app" class="mt-2 px-2 py-1 inline-block shadow-sm bg-gray-50 font-bold text-sky-900">Get Started</a>
+</div>
+</section>
+<footer class="p-4 z-20 grid place-items-center bg-slate-900 text-gray-50">
+Copyright @ 2022
+<hr class="mt-2 w-full h-2 max-w-xs">
+Design and Development by <a class="hover:underline" href="https://skndash.tk">Dash Skndash</a>
+</footer>
+<script>document.getElementById("navtoggle").remove()</script>
+<script src="scripts/notif.js"></script>
+</body>
+</html>
